@@ -10,12 +10,15 @@ module scenes {
      * @extends scene.Scene
      * @param blocker {HTMLElement}
      * @param _stage {createjs.Stage}
+     * @param _gameLabel {createjs.Text}
+     * @param _startButton {createjs.Bitmap}
      */
     export class Menu extends scenes.Scene {
         private _blocker: HTMLElement;
         private _stage: createjs.Stage;
         private _gameLabel: createjs.Text;
-        
+        private _startButton: createjs.Bitmap;
+
         /**
          * Empty Constructor - calls _initialize and start methods
          * 
@@ -48,11 +51,12 @@ module scenes {
             // Create to HTMLElements
             this._blocker = document.getElementById("blocker");
             this._blocker.style.display = "none";
-            
+
             // setup canvas for menu scene
             this._setupCanvas();
             // setup a stage on the canvas
             this._stage = new createjs.Stage(canvas);
+            this._stage.enableMouseOver(20);
         }
 
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++++++
@@ -65,7 +69,7 @@ module scenes {
          */
         public start(): void {
             this._gameLabel = new createjs.Text(
-                "COIN GAME", 
+                "COIN GAME",
                 "80px Consolas",
                 "#000000");
             this._gameLabel.regX = this._gameLabel.getMeasuredWidth() * 0.5;
@@ -73,6 +77,26 @@ module scenes {
             this._gameLabel.x = config.Screen.WIDTH * 0.5;
             this._gameLabel.y = config.Screen.HEIGHT * 0.5;
             this._stage.addChild(this._gameLabel);
+
+            this._startButton = new createjs.Bitmap(assets.getResult("StartButton"));
+            this._startButton.regX = this._startButton.getBounds().width * 0.5;
+            this._startButton.regY = this._startButton.getBounds().height * 0.5;
+            this._startButton.x = config.Screen.WIDTH * 0.5;
+            this._startButton.y = (config.Screen.HEIGHT * 0.5) + 100;
+            this._stage.addChild(this._startButton);
+
+            this._startButton.on("mouseover", (event: createjs.MouseEvent) => {
+                event.target.alpha = 0.7;
+            });
+
+            this._startButton.on("mouseout", (event: createjs.MouseEvent) => {
+                event.target.alpha = 1.0;
+            });
+
+            this._startButton.on("click", (event: createjs.MouseEvent) => {
+                currentScene = config.Scene.PLAY;
+                changeScene();
+            });
         }
 
         /**
@@ -92,7 +116,7 @@ module scenes {
          * @return void
          */
         public resize(): void {
-             this._setupCanvas();
+            this._setupCanvas();
         }
     }
 }

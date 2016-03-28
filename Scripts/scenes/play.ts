@@ -60,12 +60,33 @@ module scenes {
         // PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++
 
         /**
+         * Sets up the initial canvas for the play scene
+         * 
+         * @method setupCanvas
+         * @return void
+         */
+        private _setupCanvas(): void {
+            canvas.setAttribute("width", config.Screen.WIDTH.toString());
+            canvas.setAttribute("height", (config.Screen.HEIGHT * 0.1).toString());
+            canvas.style.backgroundColor = "#000000";
+        }
+
+        /**
          * The initialize method sets up key objects to be used in the scene
          * 
          * @method _initialize
          * @returns void
          */
         private _initialize(): void {
+            // Create to HTMLElements
+            this.blocker = document.getElementById("blocker");
+            this.instructions = document.getElementById("instructions");
+            this.blocker.style.display = "block";
+
+            // setup canvas for menu scene
+            this._setupCanvas();
+            
+            
             this.coinCount = 10;
             this.prevTime = 0;
             this.stage = new createjs.Stage(canvas);
@@ -214,7 +235,7 @@ module scenes {
          */
         private addCoinMesh(): void {
             var self = this;
-            
+
             this.coins = new Array<Physijs.ConvexMesh>(); // Instantiate a convex mesh array
 
             var coinLoader = new THREE.JSONLoader().load("../../Assets/imported/coin.json", function(geometry: THREE.Geometry) {
@@ -222,7 +243,7 @@ module scenes {
                 phongMaterial.emissive = new THREE.Color(0xE7AB32);
 
                 var coinMaterial = Physijs.createMaterial((phongMaterial), 0.4, 0.6);
-                
+
                 for (var count: number = 0; count < self.coinCount; count++) {
                     self.coins[count] = new Physijs.ConvexMesh(geometry, coinMaterial);
                     self.coins[count].receiveShadow = true;
@@ -233,7 +254,7 @@ module scenes {
                 }
             });
 
-            
+
         }
 
         /**
@@ -248,7 +269,7 @@ module scenes {
             coin.position.set(randomPointX, 10, randomPointZ);
             this.add(coin);
         }
-        
+
         /**
          * Event Handler method for any pointerLockChange events
          * 
@@ -355,9 +376,7 @@ module scenes {
          * @return void
          */
         public start(): void {
-            // Create to HTMLElements
-            this.blocker = document.getElementById("blocker");
-            this.instructions = document.getElementById("instructions");
+            
 
             // Set Up Scoreboard
             this.setupScoreboard();
@@ -471,7 +490,7 @@ module scenes {
          * @returns void
          */
         public update(): void {
-            
+
             this.coins.forEach(coin => {
                 coin.setAngularFactor(new Vector3(0, 0, 0));
                 coin.setAngularVelocity(new Vector3(0, 1, 0));

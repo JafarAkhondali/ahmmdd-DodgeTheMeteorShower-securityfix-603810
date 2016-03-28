@@ -28,12 +28,29 @@ var scenes;
         }
         // PRIVATE METHODS ++++++++++++++++++++++++++++++++++++++++++
         /**
+         * Sets up the initial canvas for the play scene
+         *
+         * @method setupCanvas
+         * @return void
+         */
+        Play.prototype._setupCanvas = function () {
+            canvas.setAttribute("width", config.Screen.WIDTH.toString());
+            canvas.setAttribute("height", (config.Screen.HEIGHT * 0.1).toString());
+            canvas.style.backgroundColor = "#000000";
+        };
+        /**
          * The initialize method sets up key objects to be used in the scene
          *
          * @method _initialize
          * @returns void
          */
         Play.prototype._initialize = function () {
+            // Create to HTMLElements
+            this.blocker = document.getElementById("blocker");
+            this.instructions = document.getElementById("instructions");
+            this.blocker.style.display = "block";
+            // setup canvas for menu scene
+            this._setupCanvas();
             this.coinCount = 10;
             this.prevTime = 0;
             this.stage = new createjs.Stage(canvas);
@@ -282,9 +299,6 @@ var scenes;
          */
         Play.prototype.start = function () {
             var _this = this;
-            // Create to HTMLElements
-            this.blocker = document.getElementById("blocker");
-            this.instructions = document.getElementById("instructions");
             // Set Up Scoreboard
             this.setupScoreboard();
             //check to see if pointerlock is supported

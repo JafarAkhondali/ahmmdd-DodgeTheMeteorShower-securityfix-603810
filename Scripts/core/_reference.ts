@@ -4,3 +4,4 @@
 /// <reference path="../config/screen.ts"/>
 /// <reference path="../scenes/scene.ts" />
 /// <reference path="../scenes/play.ts" />
+/// <reference path="../scenes/menu.ts" />

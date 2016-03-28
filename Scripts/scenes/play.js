@@ -14,6 +14,7 @@ var scenes;
      * The Play class is where the main action occurs for the game
      *
      * @class Play
+     * @param havePointerLock {boolean}
      */
     var Play = (function (_super) {
         __extends(Play, _super);

@@ -1,8 +1,8 @@
 module scenes {
     /**
-     * The Play class is where the main action occurs for the game
+     * The Scene class is a generic / custom Scene container
      * 
-     * @class Play
+     * @class Scene
      */
     export class Scene extends Physijs.Scene {
         /**

@@ -41,6 +41,8 @@ var renderer: Renderer;
 var camera: PerspectiveCamera;
 
 var play: scenes.Play;
+var menu: scenes.Menu;
+
 var stats: Stats;
 var canvas: HTMLElement;
 var assets: createjs.LoadQueue;
@@ -76,7 +78,7 @@ function init(): void {
     setupCamera();
 
     // set initial scene
-    currentScene = config.Scene.PLAY;
+    currentScene = config.Scene.MENU;
     changeScene();
 
     // Add framerate stats
@@ -145,11 +147,9 @@ function changeScene(): void {
     switch (currentScene) {
         case config.Scene.MENU:
             // show the MENU scene
-            /*
             menu = new scenes.Menu();
-            currentScene = menu;
+            scene = menu;
             console.log("Starting MENU Scene"); 
-            */
             break;
         case config.Scene.PLAY:
             // show the PLAY scene

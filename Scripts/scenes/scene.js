@@ -6,9 +6,9 @@ var __extends = (this && this.__extends) || function (d, b) {
 var scenes;
 (function (scenes) {
     /**
-     * The Play class is where the main action occurs for the game
+     * The Scene class is a generic / custom Scene container
      *
-     * @class Play
+     * @class Scene
      */
     var Scene = (function (_super) {
         __extends(Scene, _super);

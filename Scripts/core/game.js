@@ -36,6 +36,7 @@ var currentScene;
 var renderer;
 var camera;
 var play;
+var menu;
 var stats;
 var canvas;
 var assets;
@@ -65,7 +66,7 @@ function init() {
     // setup the camera
     setupCamera();
     // set initial scene
-    currentScene = config.Scene.PLAY;
+    currentScene = config.Scene.MENU;
     changeScene();
     // Add framerate stats
     addStatsObject();
@@ -120,11 +121,9 @@ function changeScene() {
     switch (currentScene) {
         case config.Scene.MENU:
             // show the MENU scene
-            /*
             menu = new scenes.Menu();
-            currentScene = menu;
+            scene = menu;
             console.log("Starting MENU Scene");
-            */
             break;
         case config.Scene.PLAY:
             // show the PLAY scene

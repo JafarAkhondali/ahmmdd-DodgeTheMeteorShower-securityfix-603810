@@ -70,7 +70,7 @@ var scenes;
         Play.prototype.setupScoreboard = function () {
             // initialize  score and lives values
             this.scoreValue = 0;
-            this.livesValue = 5;
+            this.livesValue = 1;
             // Add Lives Label
             this.livesLabel = new createjs.Text("LIVES: " + this.livesValue, "40px Consolas", "#ffffff");
             this.livesLabel.x = config.Screen.WIDTH * 0.1;
@@ -218,13 +218,24 @@ var scenes;
                 this.blocker.style.display = 'none';
             }
             else {
+                if (this.livesValue <= 0) {
+                    this.blocker.style.display = 'none';
+                    document.removeEventListener('pointerlockchange', this.pointerLockChange.bind(this), false);
+                    document.removeEventListener('mozpointerlockchange', this.pointerLockChange.bind(this), false);
+                    document.removeEventListener('webkitpointerlockchange', this.pointerLockChange.bind(this), false);
+                    document.removeEventListener('pointerlockerror', this.pointerLockError.bind(this), false);
+                    document.removeEventListener('mozpointerlockerror', this.pointerLockError.bind(this), false);
+                    document.removeEventListener('webkitpointerlockerror', this.pointerLockError.bind(this), false);
+                }
+                else {
+                    this.blocker.style.display = '-webkit-box';
+                    this.blocker.style.display = '-moz-box';
+                    this.blocker.style.display = 'box';
+                    this.instructions.style.display = '';
+                }
                 // disable our mouse and keyboard controls
                 this.keyboardControls.enabled = false;
                 this.mouseControls.enabled = false;
-                this.blocker.style.display = '-webkit-box';
-                this.blocker.style.display = '-moz-box';
-                this.blocker.style.display = 'box';
-                this.instructions.style.display = '';
                 console.log("PointerLock disabled");
             }
         };
@@ -290,6 +301,10 @@ var scenes;
                 this.player.setAngularVelocity(new Vector3(0, 0, 0));
             }
         };
+        Play.prototype._unpauseSimulation = function () {
+            scene.onSimulationResume();
+            console.log("resume simulation");
+        };
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++
         /**
          * The start method is the main method for the scene class
@@ -327,9 +342,10 @@ var scenes;
             this.name = "Main";
             this.fog = new THREE.Fog(0xffffff, 0, 750);
             this.setGravity(new THREE.Vector3(0, -10, 0));
-            this.addEventListener('update', function () {
-                _this.simulate(undefined, 2);
-            });
+            // start simulation
+            /*
+            this.addEventListener('update', this._simulateScene);
+            console.log("Start Simulation"); */
             // Add Spot Light to the scene
             this.addSpotLight();
             // Ground Object
@@ -356,10 +372,22 @@ var scenes;
                 if (eventObject.name === "DeathPlane") {
                     createjs.Sound.play("hit");
                     this.livesValue--;
-                    this.livesLabel.text = "LIVES: " + this.livesValue;
-                    this.remove(this.player);
-                    this.player.position.set(0, 30, 10);
-                    this.add(this.player);
+                    if (this.livesValue <= 0) {
+                        // Exit Pointer Lock
+                        document.exitPointerLock();
+                        this.children = []; // an attempt to clean up
+                        this._isGamePaused = true;
+                        // Play the Game Over Scene
+                        currentScene = config.Scene.OVER;
+                        changeScene();
+                    }
+                    else {
+                        // otherwise reset my player and update Lives
+                        this.livesLabel.text = "LIVES: " + this.livesValue;
+                        this.remove(this.player);
+                        this.player.position.set(0, 30, 10);
+                        this.add(this.player);
+                    }
                 }
             }.bind(this));
             // create parent-child relationship with camera and player
@@ -391,6 +419,9 @@ var scenes;
             });
             this.checkControls();
             this.stage.update();
+            if (!this.keyboardControls.paused) {
+                this.simulate();
+            }
         };
         /**
          * Responds to screen resizes

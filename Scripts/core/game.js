@@ -30,6 +30,8 @@ var Clock = THREE.Clock;
 // Setup a Web Worker for Physijs
 Physijs.scripts.worker = "/Scripts/lib/Physijs/physijs_worker.js";
 Physijs.scripts.ammo = "/Scripts/lib/Physijs/examples/js/ammo.js";
+var myWorker = new Worker(Physijs.scripts.worker);
+console.log(myWorker);
 // Game Variables
 var scene;
 var currentScene;
@@ -37,6 +39,7 @@ var renderer;
 var camera;
 var play;
 var menu;
+var over;
 var stats;
 var canvas;
 var assets;
@@ -45,7 +48,8 @@ var manifest = [
     { id: "hit", src: "../../Assets/audio/hit.wav" },
     { id: "coin", src: "../../Assets/audio/coin.mp3" },
     { id: "jump", src: "../../Assets/audio/Jump.wav" },
-    { id: "StartButton", src: "../../Assets/images/StartButton.png" }
+    { id: "StartButton", src: "../../Assets/images/StartButton.png" },
+    { id: "RestartButton", src: "../../Assets/images/RestartButton.png" }
 ];
 function preload() {
     assets = new createjs.LoadQueue();
@@ -108,6 +112,7 @@ function setupRenderer() {
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(CScreen.WIDTH, CScreen.HEIGHT);
     renderer.shadowMap.enabled = true;
+    renderer.autoClear = true;
     console.log("Finished setting up Renderer...");
 }
 // Setup main camera for the scene
@@ -134,11 +139,9 @@ function changeScene() {
             break;
         case config.Scene.OVER:
             // show the game OVER scene
-            /*
             over = new scenes.Over();
             scene = over;
             console.log("Starting OVER Scene");
-            */
             break;
     }
 }

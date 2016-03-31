@@ -1,4 +1,3 @@
-
 /// <reference path="threejs/three.d.ts" />
 /// <reference path="stats/stats.d.ts" />
 /// <reference path="gulp/gulp.d.ts" />

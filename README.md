@@ -1,3 +1,13 @@
-#COMP392-Lesson9
+#COMP392 Final Project
 
-COMP392-Lesson9 for COMP392 - Advanced Graphics @ Centennial College
+##Dodge The Meteor Shower Game
+
+###Member(s):
+Mohammed Ahmed
+Joshua Collaco
+
+###Github:
+https://github.com/300833356COMP392/DodgeTheMeteorShower
+
+###Azure
+http://dodgethemeteorshower.azurewebsites.net/

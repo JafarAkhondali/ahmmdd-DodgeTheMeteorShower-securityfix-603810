@@ -70,7 +70,7 @@ var scenes;
         Play.prototype.setupScoreboard = function () {
             // initialize  score and lives values
             this.scoreValue = 0;
-            this.livesValue = 1;
+            this.livesValue = 1; //Set it as 1 for testing
             // Add Lives Label
             this.livesLabel = new createjs.Text("LIVES: " + this.livesValue, "40px Consolas", "#ffffff");
             this.livesLabel.x = config.Screen.WIDTH * 0.1;
@@ -121,15 +121,9 @@ var scenes;
             this.groundTexture.wrapS = THREE.RepeatWrapping;
             this.groundTexture.wrapT = THREE.RepeatWrapping;
             this.groundTexture.repeat.set(8, 8);
-            this.groundTextureNormal = new THREE.TextureLoader().load('../../Assets/images/GravelCobbleNormal.png');
-            this.groundTextureNormal.wrapS = THREE.RepeatWrapping;
-            this.groundTextureNormal.wrapT = THREE.RepeatWrapping;
-            this.groundTextureNormal.repeat.set(8, 8);
             this.groundMaterial = new PhongMaterial();
             this.groundMaterial.map = this.groundTexture;
-            this.groundMaterial.bumpMap = this.groundTextureNormal;
-            this.groundMaterial.bumpScale = 0.2;
-            this.groundGeometry = new BoxGeometry(32, 1, 32);
+            this.groundGeometry = new BoxGeometry(32, 1, 1000000);
             this.groundPhysicsMaterial = Physijs.createMaterial(this.groundMaterial, 0, 0);
             this.ground = new Physijs.ConvexMesh(this.groundGeometry, this.groundPhysicsMaterial, 0);
             this.ground.receiveShadow = true;
@@ -162,8 +156,8 @@ var scenes;
          * @return void
          */
         Play.prototype.addDeathPlane = function () {
-            this.deathPlaneGeometry = new BoxGeometry(100, 1, 100);
-            this.deathPlaneMaterial = Physijs.createMaterial(new MeshBasicMaterial({ color: 0xff0000 }), 0.4, 0.6);
+            this.deathPlaneGeometry = new BoxGeometry(100, 1, 1900000);
+            this.deathPlaneMaterial = Physijs.createMaterial(new MeshBasicMaterial({ color: 0x000000 }), 0.4, 0.6);
             this.deathPlane = new Physijs.BoxMesh(this.deathPlaneGeometry, this.deathPlaneMaterial, 0);
             this.deathPlane.position.set(0, -10, 0);
             this.deathPlane.name = "DeathPlane";

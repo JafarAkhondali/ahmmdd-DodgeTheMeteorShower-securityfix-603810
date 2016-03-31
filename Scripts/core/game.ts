@@ -32,9 +32,6 @@ import Clock = THREE.Clock;
 
 // Setup a Web Worker for Physijs
 
-
-
-
 Physijs.scripts.worker = "/Scripts/lib/Physijs/physijs_worker.js";
 Physijs.scripts.ammo = "/Scripts/lib/Physijs/examples/js/ammo.js";
 var myWorker = new Worker(Physijs.scripts.worker);

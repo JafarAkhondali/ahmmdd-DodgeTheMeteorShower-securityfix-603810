@@ -1,13 +1,13 @@
 {
-  "name": "comp392-lesson10",
+  "name": "dodgethemeteorshower",
   "authors": [
-    "Tom Tsiliopoulos <tsiliopoulos@hotmail.com>"
+    "Mohammed Ahmed <ahmed3415@gmail.com>, Joshua Collaco <>"
   ],
-  "description": "COMP392 Lesson 9 for Advanced Graphics",
+  "description": "COMP392 Finall Progect",
   "main": "",
   "moduleType": [],
   "license": "MIT",
-  "homepage": "https://github.com/CentennialCollege/COMP392-Lesson10",
+  "homepage": "https://github.com/300833356COMP392/DodgeTheMeteorShower",
   "ignore": [
     "**/.*",
     "node_modules",

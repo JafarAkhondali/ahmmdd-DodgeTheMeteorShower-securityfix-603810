@@ -15,16 +15,16 @@
       "commit": "3191f6e0088eee07c4d8fd24e4d27a40a60d9eb9"
     },
     "gulp/gulp.d.ts": {
-      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+      "commit": "e937b3e64af586d19f2ea29fdf771e9dc4feecc8"
     },
     "node/node.d.ts": {
-      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+      "commit": "e937b3e64af586d19f2ea29fdf771e9dc4feecc8"
     },
     "orchestrator/orchestrator.d.ts": {
-      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+      "commit": "e937b3e64af586d19f2ea29fdf771e9dc4feecc8"
     },
     "q/Q.d.ts": {
-      "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"
+      "commit": "e937b3e64af586d19f2ea29fdf771e9dc4feecc8"
     },
     "gulp-util/gulp-util.d.ts": {
       "commit": "3030a4be536b6530c06b80081f1333dc0de4d703"

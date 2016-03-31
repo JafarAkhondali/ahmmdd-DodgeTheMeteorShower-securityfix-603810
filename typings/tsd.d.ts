@@ -18,3 +18,4 @@
 /// <reference path="tweenjs/tweenjs.d.ts" />
 /// <reference path="preloadjs/preloadjs.d.ts" />
 /// <reference path="soundjs/soundjs.d.ts" />
+/// <reference path="dat-gui/dat-gui.d.ts" />

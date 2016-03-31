@@ -22,7 +22,6 @@ module scenes {
         private groundMaterial: PhongMaterial;
         private ground: Physijs.Mesh;
         private groundTexture: Texture;
-        private groundTextureNormal: Texture;
         private playerGeometry: CubeGeometry;
         private playerMaterial: Physijs.Material;
         private player: Physijs.Mesh;
@@ -86,7 +85,6 @@ module scenes {
             // setup canvas for menu scene
             this._setupCanvas();
 
-
             this.coinCount = 10;
             this.prevTime = 0;
             this.stage = new createjs.Stage(canvas);
@@ -108,7 +106,7 @@ module scenes {
         private setupScoreboard(): void {
             // initialize  score and lives values
             this.scoreValue = 0;
-            this.livesValue = 1;
+            this.livesValue = 1;//Set it as 1 for testing
 
             // Add Lives Label
             this.livesLabel = new createjs.Text(
@@ -172,17 +170,10 @@ module scenes {
             this.groundTexture.wrapT = THREE.RepeatWrapping;
             this.groundTexture.repeat.set(8, 8);
 
-            this.groundTextureNormal = new THREE.TextureLoader().load('../../Assets/images/GravelCobbleNormal.png');
-            this.groundTextureNormal.wrapS = THREE.RepeatWrapping;
-            this.groundTextureNormal.wrapT = THREE.RepeatWrapping;
-            this.groundTextureNormal.repeat.set(8, 8);
-
             this.groundMaterial = new PhongMaterial();
             this.groundMaterial.map = this.groundTexture;
-            this.groundMaterial.bumpMap = this.groundTextureNormal;
-            this.groundMaterial.bumpScale = 0.2;
 
-            this.groundGeometry = new BoxGeometry(32, 1, 32);
+            this.groundGeometry = new BoxGeometry(32, 1, 1000000);
             this.groundPhysicsMaterial = Physijs.createMaterial(this.groundMaterial, 0, 0);
             this.ground = new Physijs.ConvexMesh(this.groundGeometry, this.groundPhysicsMaterial, 0);
             this.ground.receiveShadow = true;
@@ -218,8 +209,8 @@ module scenes {
          * @return void
          */
         private addDeathPlane(): void {
-            this.deathPlaneGeometry = new BoxGeometry(100, 1, 100);
-            this.deathPlaneMaterial = Physijs.createMaterial(new MeshBasicMaterial({ color: 0xff0000 }), 0.4, 0.6);
+            this.deathPlaneGeometry = new BoxGeometry(100, 1, 1900000);
+            this.deathPlaneMaterial = Physijs.createMaterial(new MeshBasicMaterial({ color: 0x000000 }), 0.4, 0.6);
 
             this.deathPlane = new Physijs.BoxMesh(this.deathPlaneGeometry, this.deathPlaneMaterial, 0);
             this.deathPlane.position.set(0, -10, 0);
@@ -451,8 +442,6 @@ module scenes {
             this.addDeathPlane();
 
             // Collision Check
-
-
             this.player.addEventListener('collision', function(eventObject) {
                 if (eventObject.name === "Ground") {
                     this.isGrounded = true;
@@ -465,7 +454,6 @@ module scenes {
                     this.scoreValue += 100;
                     this.scoreLabel.text = "SCORE: " + this.scoreValue;
                 }
-
                 if (eventObject.name === "DeathPlane") {
                     createjs.Sound.play("hit");
                     this.livesValue--;
@@ -491,7 +479,6 @@ module scenes {
             // create parent-child relationship with camera and player
             this.player.add(camera);
             camera.position.set(0, 1, 0);
-
             this.simulate();
         }
 
@@ -516,12 +503,10 @@ module scenes {
          * @returns void
          */
         public update(): void {
-
             this.coins.forEach(coin => {
                 coin.setAngularFactor(new Vector3(0, 0, 0));
                 coin.setAngularVelocity(new Vector3(0, 1, 0));
             });
-
             this.checkControls();
             this.stage.update();
             

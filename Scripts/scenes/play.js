@@ -45,6 +45,10 @@ var scenes;
          * @returns void
          */
         Play.prototype._initialize = function () {
+            //player position
+            this.playersZPosition = 0;
+            this.generatorCounter = 0;
+            this.nextGroundZPosition = 32;
             // Create to HTMLElements
             this.blocker = document.getElementById("blocker");
             this.instructions = document.getElementById("instructions");
@@ -111,6 +115,31 @@ var scenes;
             console.log("Added spotLight to scene");
         };
         /**
+         * Add a spotLight for the next plane added
+         *
+         * @method addNextSpotLight
+         * @return void
+         */
+        Play.prototype.addNextSpotLight = function () {
+            this.spotLightNext = new SpotLight(0xffffff);
+            this.spotLightNext.position.set(0, 50, (64 + this.nextGroundZPosition));
+            this.spotLightNext.castShadow = true;
+            this.spotLightNext.intensity = 3;
+            this.spotLightNext.lookAt(new Vector3(0, 0, this.nextGroundZPosition + 10));
+            this.spotLightNext.shadowCameraNear = 2;
+            this.spotLightNext.shadowCameraFar = 200;
+            this.spotLightNext.shadowCameraLeft = -5;
+            this.spotLightNext.shadowCameraRight = 5;
+            this.spotLightNext.shadowCameraTop = 5;
+            this.spotLightNext.shadowCameraBottom = -5;
+            this.spotLightNext.shadowMapWidth = 2048;
+            this.spotLightNext.shadowMapHeight = 2048;
+            this.spotLightNext.shadowDarkness = 0.5;
+            this.spotLightNext.name = "Spot Light Next";
+            console.log("SpotlightNext looking at" + this.nextGroundZPosition);
+            this.add(this.spotLightNext);
+        };
+        /**
          * Add a ground plane to the scene
          *
          * @method addGround
@@ -120,16 +149,39 @@ var scenes;
             this.groundTexture = new THREE.TextureLoader().load('../../Assets/images/GravelCobble.jpg');
             this.groundTexture.wrapS = THREE.RepeatWrapping;
             this.groundTexture.wrapT = THREE.RepeatWrapping;
-            this.groundTexture.repeat.set(8, 8);
+            this.groundTexture.repeat.set(1, 1);
             this.groundMaterial = new PhongMaterial();
             this.groundMaterial.map = this.groundTexture;
-            this.groundGeometry = new BoxGeometry(32, 1, 1000000);
+            this.groundGeometry = new BoxGeometry(32, 1, 32);
             this.groundPhysicsMaterial = Physijs.createMaterial(this.groundMaterial, 0, 0);
             this.ground = new Physijs.ConvexMesh(this.groundGeometry, this.groundPhysicsMaterial, 0);
             this.ground.receiveShadow = true;
             this.ground.name = "Ground";
             this.add(this.ground);
             console.log("Added Burnt Ground to scene");
+        };
+        /**
+         * Add a new ground plane to the scene
+         *
+         * @method addNextGround
+         * @return void
+         */
+        Play.prototype.addNextGround = function () {
+            this.groundTextureNext = new THREE.TextureLoader().load("../../Assets/images/road.jpg");
+            this.groundTextureNext.wrapS = THREE.RepeatWrapping;
+            this.groundTextureNext.wrapT = THREE.RepeatWrapping;
+            this.groundTextureNext.repeat.set(1, 1);
+            this.groundMaterialNext = new PhongMaterial();
+            this.groundMaterialNext.map = this.groundTextureNext;
+            this.groundMaterialNext.bumpMap = this.groundTextureNext;
+            this.groundMaterialNext.bumpScale = 0.2;
+            this.groundGeometryNext = new BoxGeometry(32, 1, 32);
+            this.groundPhysicsMaterialNext = Physijs.createMaterial(this.groundMaterialNext, 0, 0);
+            this.groundNext = new Physijs.ConvexMesh(this.groundGeometryNext, this.groundPhysicsMaterialNext, 0);
+            this.groundNext.position.set(0, 0, this.nextGroundZPosition);
+            this.groundNext.receiveShadow = true;
+            this.groundNext.name = "Ground";
+            this.add(this.groundNext);
         };
         /**
          * Adds the player controller to the scene
@@ -139,10 +191,11 @@ var scenes;
          */
         Play.prototype.addPlayer = function () {
             // Player Object
-            this.playerGeometry = new BoxGeometry(2, 4, 2);
+            this.playerGeometry = new BoxGeometry(3, 2, 4);
             this.playerMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0x00ff00 }), 0.4, 0);
             this.player = new Physijs.BoxMesh(this.playerGeometry, this.playerMaterial, 1);
-            this.player.position.set(0, 30, 10);
+            this.player.position.set(0, 3, 10);
+            this.player.rotateY(180);
             this.player.receiveShadow = true;
             this.player.castShadow = true;
             this.player.name = "Player";
@@ -156,7 +209,7 @@ var scenes;
          * @return void
          */
         Play.prototype.addDeathPlane = function () {
-            this.deathPlaneGeometry = new BoxGeometry(100, 1, 1900000);
+            this.deathPlaneGeometry = new BoxGeometry(100, 1, 100);
             this.deathPlaneMaterial = Physijs.createMaterial(new MeshBasicMaterial({ color: 0x000000 }), 0.4, 0.6);
             this.deathPlane = new Physijs.BoxMesh(this.deathPlaneGeometry, this.deathPlaneMaterial, 0);
             this.deathPlane.position.set(0, -10, 0);
@@ -197,6 +250,62 @@ var scenes;
             var randomPointZ = Math.floor(Math.random() * 20) - 10;
             coin.position.set(randomPointX, 10, randomPointZ);
             this.add(coin);
+        };
+        /**
+         * This method creates new enemies and adds them to the scene
+         *
+         * @methodcreateNewEnemies
+         * @return void
+         */
+        Play.prototype.createNewEnemies = function () {
+            this.enemyGeometry = new BoxGeometry(4, 4, 4);
+            this.enemyMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0.4, 0);
+            this.enemyOne = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyOne.position.set(8, 8, 8);
+            this.enemyOne.receiveShadow = true;
+            this.enemyOne.castShadow = true;
+            this.enemyOne.name = "Enemy One";
+            this.enemyTwo = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyTwo.position.set(-8, 8, 8);
+            this.enemyTwo.receiveShadow = true;
+            this.enemyTwo.castShadow = true;
+            this.enemyTwo.name = "Enemy Two";
+            this.enemyThree = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyThree.position.set(6, 8, 8);
+            this.enemyThree.receiveShadow = true;
+            this.enemyThree.castShadow = true;
+            this.enemyThree.name = "Enemy Three";
+            this.add(this.enemyOne);
+            this.add(this.enemyTwo);
+            this.add(this.enemyThree);
+        };
+        /**
+         * This method creates new enemies on the new plane and adds them to the scene
+         *
+         * @methodcreateNewNextEnemies
+         * @return void
+         */
+        Play.prototype.createNewNextEnemies = function () {
+            var max = this.nextGroundZPosition;
+            var min = this.nextGroundZPosition - 15;
+            this.enemyOne = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyOne.position.set(Math.floor(Math.random() * (15 - -15 + 1)) + -15, 50, Math.floor(Math.random() * (max - min + 1)) + min);
+            this.enemyOne.receiveShadow = true;
+            this.enemyOne.castShadow = true;
+            this.enemyOne.name = "Enemy One";
+            this.add(this.enemyOne);
+            this.enemyTwo = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyTwo.position.set(Math.floor(Math.random() * (15 - -15 + 1)) + -15, 50, Math.floor(Math.random() * (max - min + 1)) + min);
+            this.enemyTwo.receiveShadow = true;
+            this.enemyTwo.castShadow = true;
+            this.enemyTwo.name = "Enemy Two";
+            this.add(this.enemyTwo);
+            this.enemyThree = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
+            this.enemyThree.position.set(Math.floor(Math.random() * (15 - -15 + 1)) + -15, 50, Math.floor(Math.random() * (max - min + 1)) + min);
+            this.enemyThree.receiveShadow = true;
+            this.enemyThree.castShadow = true;
+            this.enemyThree.name = "Enemy Three";
+            this.add(this.enemyThree);
         };
         /**
          * Event Handler method for any pointerLockChange events
@@ -269,14 +378,17 @@ var scenes;
                     if (this.keyboardControls.moveRight) {
                         this.velocity.x += 400.0 * delta;
                     }
+                    /*
                     if (this.keyboardControls.jump) {
                         this.velocity.y += 4000.0 * delta;
                         if (this.player.position.y > 4) {
                             this.isGrounded = false;
                             createjs.Sound.play("jump");
                         }
+
                     }
-                    this.player.setDamping(0.7, 0.1);
+                    */
+                    this.player.setDamping(0.4, 0.1);
                     // Changing player's rotation
                     this.player.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
                     direction.addVectors(direction, this.velocity);
@@ -382,6 +494,9 @@ var scenes;
                         this.player.position.set(0, 30, 10);
                         this.add(this.player);
                     }
+                }
+                if (this.livesValue <= 0) {
+                    alert("You are Dead!");
                 }
             }.bind(this));
             // create parent-child relationship with camera and player

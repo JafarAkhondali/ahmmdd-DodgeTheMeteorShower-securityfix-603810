@@ -234,6 +234,74 @@ module scenes {
             this.add(this.ground);
             console.log("Added Burnt Ground to scene");
         }
+        /**
+         * 
+         */
+        private addNewGround(): void {
+            this.enemyGeometry = new BoxGeometry(4, 4, 4);
+            this.enemyMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0.4, 0);
+
+            if (this.generatorCounter % 2 == 0) {
+
+                scene.remove(this.groundNext);
+                scene.remove(this.spotLightNext);
+                scene.remove(this.spherePickup);
+
+                console.log("Created Original Ground");
+                // Placing new ground texture
+                this.addNextGroundTexture();
+                //Placing new Spotlight
+                this.addNextSpotLight();
+
+
+
+                this.addSpherePickup();
+                this.addNextEnemies();
+
+            } else if (this.generatorCounter % 2 != 0) {
+
+                scene.remove(this.ground);
+                scene.remove(this.spotLight);
+                scene.remove(this.spherePickup);
+
+                // Placing new ground texture
+                this.addNextGroundTexture();
+
+                //Placing new Spotlight
+                this.addNextSpotLight();
+
+
+                this.addSpherePickup();
+
+                this.addNextEnemies();
+
+            }
+        }
+
+        /**
+         * 
+         */
+        private addNextGroundTexture(): void {
+            // Placing new ground texture
+            this.groundTextureNext = new THREE.TextureLoader().load("../../Assets/images/road.jpg");
+            this.groundTextureNext.wrapS = THREE.RepeatWrapping;
+            this.groundTextureNext.wrapT = THREE.RepeatWrapping;
+            this.groundTextureNext.repeat.set(1, 1);
+
+            this.groundMaterialNext = new PhongMaterial();
+            this.groundMaterialNext.map = this.groundTextureNext;
+            this.groundMaterialNext.bumpMap = this.groundTextureNext;
+            this.groundMaterialNext.bumpScale = 0.2;
+
+            this.groundGeometryNext = new BoxGeometry(32, 1, 32);
+            this.groundPhysicsMaterialNext = Physijs.createMaterial(this.groundMaterialNext, 0, 0);
+            this.groundNext = new Physijs.ConvexMesh(this.groundGeometryNext, this.groundPhysicsMaterialNext, 0);
+            this.groundNext.position.set(0, 0, this.nextGroundZPosition);
+            this.groundNext.receiveShadow = true;
+            this.groundNext.name = "Ground";
+            this.add(this.groundNext);
+        }
+
 
         /**
          * Add a new ground plane to the scene
@@ -325,7 +393,22 @@ module scenes {
 
 
         }
-
+        /**
+         * This method adds a spheres to the scene
+         * 
+         * @method addSpherePickup
+         * @return void
+         */
+        private addSpherePickup(): void {
+            this.sphereGeometryPickup = new SphereGeometry(1, 32, 32);
+            this.sphereMaterialPickup = Physijs.createMaterial(new LambertMaterial({ color: 0xffaa11 }), 0.4, 0);
+            this.spherePickup = new Physijs.SphereMesh(this.sphereGeometryPickup, this.sphereMaterialPickup, 1);
+            this.spherePickup.position.set(0, 1000, 0);
+            this.spherePickup.receiveShadow = true;
+            this.spherePickup.castShadow = true;
+            this.spherePickup.name = "SpherePickup";
+            this.add(this.spherePickup);
+        }
         /**
          * This method randomly sets the coin object's position
          * 
@@ -339,37 +422,6 @@ module scenes {
             this.add(coin);
         }
 
-        /**
-         * This method creates new enemies and adds them to the scene
-         * 
-         * @methodcreateNewEnemies
-         * @return void
-         */
-        private createNewEnemies(): void {
-            this.enemyGeometry = new BoxGeometry(4, 4, 4);
-            this.enemyMaterial = Physijs.createMaterial(new LambertMaterial({ color: 0xff0000 }), 0.4, 0);
-            this.enemyOne = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
-            this.enemyOne.position.set(8, 8, 8);
-            this.enemyOne.receiveShadow = true;
-            this.enemyOne.castShadow = true;
-            this.enemyOne.name = "Enemy One";
-
-            this.enemyTwo = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
-            this.enemyTwo.position.set(-8, 8, 8);
-            this.enemyTwo.receiveShadow = true;
-            this.enemyTwo.castShadow = true;
-            this.enemyTwo.name = "Enemy Two";
-
-            this.enemyThree = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
-            this.enemyThree.position.set(6, 8, 8);
-            this.enemyThree.receiveShadow = true;
-            this.enemyThree.castShadow = true;
-            this.enemyThree.name = "Enemy Three";
-
-            this.add(this.enemyOne);
-            this.add(this.enemyTwo);
-            this.add(this.enemyThree);
-        }
 
         /**
          * This method creates new enemies on the new plane and adds them to the scene
@@ -377,10 +429,10 @@ module scenes {
          * @methodcreateNewNextEnemies
          * @return void
          */
-        private createNewNextEnemies(): void {
+        private addNextEnemies(): void {
             var max = this.nextGroundZPosition;
             var min = this.nextGroundZPosition - 15;
-            
+
             this.enemyOne = new Physijs.BoxMesh(this.enemyGeometry, this.enemyMaterial, 1);
             this.enemyOne.position.set(Math.floor(Math.random() * (15 - -15 + 1)) + -15, 50, Math.floor(Math.random() * (max - min + 1)) + min);
             this.enemyOne.receiveShadow = true;
@@ -478,7 +530,7 @@ module scenes {
                     if (this.keyboardControls.moveRight) {
                         this.velocity.x += 400.0 * delta;
                     }
-                    /*
+
                     if (this.keyboardControls.jump) {
                         this.velocity.y += 4000.0 * delta;
                         if (this.player.position.y > 4) {
@@ -487,8 +539,8 @@ module scenes {
                         }
 
                     }
-                    */
-                    this.player.setDamping(0.4, 0.1);
+                    //*/
+                    this.player.setDamping(0.7, 0.1);
                     // Changing player's rotation
                     this.player.setAngularVelocity(new Vector3(0, this.mouseControls.yaw, 0));
                     direction.addVectors(direction, this.velocity);
@@ -497,7 +549,7 @@ module scenes {
                         this.player.applyCentralForce(direction);
                     }
 
-                    this.cameraLook();
+                    //this.cameraLook();
 
                 } // isGrounded ends
 
@@ -515,6 +567,32 @@ module scenes {
         private _unpauseSimulation(): void {
             scene.onSimulationResume();
             console.log("resume simulation");
+        }
+        /**
+         * Camera Look function
+         * 
+         * @method cameraLook
+         * @return void
+         */
+        private cameraLook(): void {
+            var zenith: number = THREE.Math.degToRad(90);
+            var nadir: number = THREE.Math.degToRad(-90);
+
+            var cameraPitch: number = camera.rotation.x + this.mouseControls.pitch;
+
+            // Constrain the Camera Pitch
+            camera.rotation.x = THREE.Math.clamp(cameraPitch, nadir, zenith);
+        }
+
+        private playerPositionCheck(): void {
+            this.playersZPosition = this.player.position.z;
+            if (this.playersZPosition > this.nextGroundZPosition) {
+                this.nextGroundZPosition += 32;
+                console.log("Player z: " + this.player.position.z + "\n");
+                this.generatorCounter++;
+                console.log(this.generatorCounter);
+                this.addNextGround();
+            }
         }
 
         // PUBLIC METHODS +++++++++++++++++++++++++++++++++++++++++++
@@ -572,15 +650,22 @@ module scenes {
 
             // Add Spot Light to the scene
             this.addSpotLight();
+            this.addNextSpotLight();
 
             // Ground Object
-            this.addGround();
+            //this.addGround();
+            this.addNextGroundTexture();
+            this.addSpherePickup();
+
+            this.addNewGround();
+            this.addNextEnemies();
+
 
             // Add player controller
-            this.addPlayer();
+            //this.addPlayer();
 
             // Add custom coin imported from Blender
-            this.addCoinMesh();
+            //this.addCoinMesh();
 
             // Add death plane to the scene
             this.addDeathPlane();
@@ -591,12 +676,31 @@ module scenes {
                     this.isGrounded = true;
                     createjs.Sound.play("land");
                 }
-                if (eventObject.name === "Coin") {
+                if (eventObject.name === "Sphere") {
+                    console.log("player hit the sphere");
+                    this.remove(this.sphere);
+                }
+                if (eventObject.name === "SpherePickup") {
                     createjs.Sound.play("coin");
                     this.remove(eventObject);
                     this.setCoinPosition(eventObject);
-                    this.scoreValue += 100;
+                    this.scoreValue += 3;
                     this.scoreLabel.text = "SCORE: " + this.scoreValue;
+                }
+                if (eventObject.name === "Enemy One") {
+                    this.remove(this.enemyOne);
+                    console.log("Death");
+                    this.livesValue--;
+                }
+                if (eventObject.name === "Enemy Two") {
+                    this.remove(this.enemyTwo);
+                    console.log("Death");
+                    this.livesValue--;
+                }
+                if (eventObject.name === "Enemy Three") {
+                    this.remove(this.enemyThree);
+                    console.log("Death");
+                    this.livesValue--;
                 }
                 if (eventObject.name === "DeathPlane") {
                     createjs.Sound.play("hit");
@@ -614,7 +718,7 @@ module scenes {
                         // otherwise reset my player and update Lives
                         this.livesLabel.text = "LIVES: " + this.livesValue;
                         this.remove(this.player);
-                        this.player.position.set(0, 30, 10);
+                        this.player.position.set(0, 4, 15);
                         this.add(this.player);
                     }
                 }
@@ -625,24 +729,8 @@ module scenes {
 
             // create parent-child relationship with camera and player
             this.player.add(camera);
-            camera.position.set(0, 1, 0);
+            camera.position.set(0, 4, 15);
             this.simulate();
-        }
-
-        /**
-         * Camera Look function
-         * 
-         * @method cameraLook
-         * @return void
-         */
-        private cameraLook(): void {
-            var zenith: number = THREE.Math.degToRad(90);
-            var nadir: number = THREE.Math.degToRad(-90);
-
-            var cameraPitch: number = camera.rotation.x + this.mouseControls.pitch;
-
-            // Constrain the Camera Pitch
-            camera.rotation.x = THREE.Math.clamp(cameraPitch, nadir, zenith);
         }
 
         /**
